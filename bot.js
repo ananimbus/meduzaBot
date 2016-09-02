@@ -46,7 +46,7 @@ function gameBot() {
    * Есть ли оповещалки
    */
   function hasInfo() {
-    return $('a:contains("Лидеры")').parent().next().find('span>div>div').length > 0;
+    return $('a:contains("Лидеры")').parent().next().find('span>div>div:contains("Через")').length > 0;
   }
 
   /**
