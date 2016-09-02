@@ -38,15 +38,6 @@ function gameBot() {
    * Закрыть все оповещалки
    */
   function closeAllInfo() {
-    var elmArr = $('a:contains("Лидеры")').parent().next().find('span>div>div')
-    for (var i = 0; i < elmArr.length; i++) {
-      $(elmArr[i]).parent().find('a:contains("×")').get(0).click();
-    }
-  }
-  /**
-   * Закрыть ненужные оповещалки
-   */
-  function closeMessages() {
     var elmArr = $('a:contains("Лидеры")').parent().next().find('span>div>div:not(:contains("Через"))')
     for (var i = 0; i < elmArr.length; i++) {
       $(elmArr[i]).parent().find('a:contains("×")').get(0).click();
@@ -69,7 +60,7 @@ function gameBot() {
     for (var i = 0; i < messages.length; i++) {
       var element = messages.eq(i);
       //'Через 0 секунд'.match(/Через (\d+) секунд/)[1]
-      var match = element.text().match(/Через (\d+) секунд/);
+      var match = element.text().match(/Через (\d+) секунд/i);
       if (match && match.length > 1) {
         var val = parseInt(match[1]);
         if (min == 0) {
@@ -109,13 +100,14 @@ function gameBot() {
     if (button.text() != "Пауза") {//пауза
       this.counter++;
       if (this.counter >= 4) {
-        closeAllInfo();
         this.counter = 0;
       }
     }
+    closeAllInfo();
     checkAddon();
   }
 }
 
 var bot = new gameBot();
+bot.addJquery();
 bot.start();
