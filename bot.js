@@ -50,6 +50,23 @@ function gameBot() {
   }
 
   /**
+   * Получить сколько секунд ждать
+   */
+  function getSeconds() {
+    var max = 0;
+    var messages = $('a:contains("Лидеры")').parent().next().find('span>div>div p');
+    for (var i = 0; i < messages.length; i++) {
+      var element = messages[i];
+      //'Через 0 секунд'.match(/Через (\d+) секунд/)[1]
+      var match = element.text().match(/Через (\d+) секунд/);
+      if (match.length > 1) {
+        var val = parseInt(match[1]);
+        max = Math.max(max, val);
+      }
+    }
+    return max;
+  }
+  /**
    * Механизм покупок
    */
   function checkAddon() {
