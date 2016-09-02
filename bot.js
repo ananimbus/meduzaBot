@@ -41,7 +41,8 @@ function gameBot() {
   function closeAllInfo() {
     var elmArr = $('a:contains("Лидеры")').parent().next().find('span>div>div:not(:contains("Через"))')
     for (var i = 0; i < elmArr.length; i++) {
-      $(elmArr[i]).parent().find('a:contains("×")').get(0).click();
+      var elm = elmArr.eq(i);
+      elm.parent().find('a:contains("×")').get(0).click();
     }
   }
 
@@ -49,7 +50,31 @@ function gameBot() {
    * Есть ли оповещалки
    */
   function hasInfo() {
-    return $('a:contains("Лидеры")').parent().next().find('span>div>div:contains("Через")').length > 0 && getSeconds() < 2;
+    return $('a:contains("Лидеры")').parent().next().find('span>div>div:contains("Через")').length > 0 && getSeconds() < 3;
+  }
+
+  /**
+   * Список покупок
+   */
+  function getListToBuy() {
+    var result = [];
+    var list = $('a:contains("Лидеры")').parent().next().next().find('>div');
+    for (var i = 0; i < list.length; i++) {
+      var element = list.eq(i);
+      var text = element.find('a div div div>span:eq(0)').text();
+      var matchPerSec = text.match(/[+-]\d+\.\d+/i);
+      if (matchPerSec) {
+        var costPerSec = parseFloat(matchPerSec ? matchPerSec[0] : 0);
+        var cost = parseFloat(element.find('div div div:last').text());
+        result.push({
+          text: text,
+          costPerSec: costPerSec,
+          cost: cost,
+          val: cost / costPerSec
+        });
+      }
+    }
+    return result;
   }
 
   /**
@@ -77,13 +102,20 @@ function gameBot() {
    * Механизм покупок
    */
   function checkAddon() {
-    //$('span audio source[src]').last().parent().parent().parent().next().find('div').eq(0).find('a>div>div div div:eq(1) span:eq(0)').text()[0] =="+"
-    //Список доступных опций
-    // var addons = $('span audio source[src]').last().parent().parent().parent().next().find('div');
-    // for (var i = 0; i < addons.length; i++) {
-    //   var element = addons[i];
+    var list = getListToBuy();
+    var max = 0;
+    list.filter(function (item) {
+      return item.val > 0;
+    }).forEach(function (item) {
+      if (max == 0) {
+        max = item.val;
+      } else {
+        max = Math.max(max, item.val);
+      }
+    });
 
-    // }
+
+
   }
 
   /**
@@ -100,7 +132,7 @@ function gameBot() {
     }
     if (button.text() != "Пауза") {//пауза
       this.counter++;
-      if (this.counter >= 4) {
+      if (this.counter >= 5) {
         this.counter = 0;
       }
     }
