@@ -6,8 +6,8 @@ function gameBot() {
   this.hasInfo = hasInfo;
   this.checkAddon = checkAddon;
   this.counter = 0;
-  this.game123 = execute;
-
+  this.execute = execute;
+  this.getSeconds = getSeconds;
   /**
    * Добавить jquery
    */
