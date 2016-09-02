@@ -1,6 +1,7 @@
 //ВИТОЧЕК СЕМЬСОТ
 
 function gameBot() {
+  this.interval = 1000;
   this.addJquery = addJquery;
   this.start = start;
   this.closeAllInfo = closeAllInfo;
@@ -24,7 +25,7 @@ function gameBot() {
    * Запустить бота
    */
   function start() {
-    setInterval(execute, 1000);
+    setInterval(execute, this.interval);
   }
 
   /**
@@ -107,7 +108,8 @@ function gameBot() {
     checkAddon();
   }
 }
-
 var bot = new gameBot();
 bot.addJquery();
-bot.start();
+setTimeout(function () {
+  bot.start();
+}, 2000);
