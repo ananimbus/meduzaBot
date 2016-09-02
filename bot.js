@@ -1,3 +1,5 @@
+//ВИТОЧЕК СЕМЬСОТ
+
 function gameBot() {
   this.addJquery = addJquery;
   this.start = start;
@@ -46,25 +48,25 @@ function gameBot() {
    * Есть ли оповещалки
    */
   function hasInfo() {
-    return $('a:contains("Лидеры")').parent().next().find('span>div>div:contains("Через")').length > 0;
+    return $('a:contains("Лидеры")').parent().next().find('span>div>div:contains("Через")').length > 0 && getSeconds() < 3;
   }
 
   /**
    * Получить сколько секунд ждать
    */
   function getSeconds() {
-    var max = 0;
+    var min = 0;
     var messages = $('a:contains("Лидеры")').parent().next().find('span>div>div p');
     for (var i = 0; i < messages.length; i++) {
-      var element = messages[i];
+      var element = messages.eq(i);
       //'Через 0 секунд'.match(/Через (\d+) секунд/)[1]
       var match = element.text().match(/Через (\d+) секунд/);
-      if (match.length > 1) {
+      if (match && match.length > 1) {
         var val = parseInt(match[1]);
-        max = Math.max(max, val);
+        min = Math.min(min, val);
       }
     }
-    return max;
+    return min;
   }
   /**
    * Механизм покупок
@@ -93,7 +95,7 @@ function gameBot() {
     }
     if (button.text() != "Пауза") {//пауза
       this.counter++;
-      if (this.counter >= 10) {
+      if (this.counter >= 3) {
         closeAllInfo();
         this.counter = 0;
       }
