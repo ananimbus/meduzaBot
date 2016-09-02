@@ -24,7 +24,7 @@ function gameBot() {
    * Запустить бота
    */
   function start() {
-    setInterval(execute, 2000);
+    setInterval(execute, 1000);
   }
 
   /**
@@ -43,12 +43,21 @@ function gameBot() {
       $(elmArr[i]).parent().find('a:contains("×")').get(0).click();
     }
   }
+  /**
+   * Закрыть ненужные оповещалки
+   */
+  function closeMessages() {
+    var elmArr = $('a:contains("Лидеры")').parent().next().find('span>div>div:not(:contains("Через"))')
+    for (var i = 0; i < elmArr.length; i++) {
+      $(elmArr[i]).parent().find('a:contains("×")').get(0).click();
+    }
+  }
 
   /**
    * Есть ли оповещалки
    */
   function hasInfo() {
-    return $('a:contains("Лидеры")').parent().next().find('span>div>div:contains("Через")').length > 0 && getSeconds() < 3;
+    return $('a:contains("Лидеры")').parent().next().find('span>div>div:contains("Через")').length > 0 && getSeconds() < 2;
   }
 
   /**
@@ -63,7 +72,11 @@ function gameBot() {
       var match = element.text().match(/Через (\d+) секунд/);
       if (match && match.length > 1) {
         var val = parseInt(match[1]);
-        min = Math.min(min, val);
+        if (min == 0) {
+          min = val;
+        } else {
+          min = Math.min(min, val);
+        }
       }
     }
     return min;
@@ -95,7 +108,7 @@ function gameBot() {
     }
     if (button.text() != "Пауза") {//пауза
       this.counter++;
-      if (this.counter >= 3) {
+      if (this.counter >= 4) {
         closeAllInfo();
         this.counter = 0;
       }
