@@ -43,7 +43,7 @@ function gameBot() {
   }
 
   /**
-   * Есть ли сообщения об ошибке
+   * Есть ли оповещалки
    */
   function hasInfo() {
     return $('a:contains("Лидеры")').parent().next().find('span>div>div').length > 0;
