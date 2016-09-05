@@ -1,5 +1,3 @@
-//ВИТОЧЕК СЕМЬСОТ
-
 function gameBot() {
   this.interval = 1000;
   this.addJquery = addJquery;
@@ -11,6 +9,8 @@ function gameBot() {
   this.counter = 0;
   this.execute = execute;
   this.getSeconds = getSeconds;
+  this.buyCounter = 0;
+  this.timeToBuy = 10 * 60;
   /**
    * Добавить jquery
    */
@@ -66,12 +66,16 @@ function gameBot() {
       if (matchPerSec) {
         var costPerSec = parseFloat(matchPerSec ? matchPerSec[0] : 0);
         var cost = parseFloat(element.find('div div div:last').text());
-        result.push({
-          text: text,
-          costPerSec: costPerSec,
-          cost: cost,
-          val: cost / costPerSec
-        });
+        var val = cost / costPerSec;
+        if (costPerSec > 0) {
+          result.push({
+            text: text,
+            costPerSec: costPerSec,
+            cost: cost,
+            val: val,
+            index: i
+          });
+        }
       }
     }
     return result;
@@ -98,24 +102,31 @@ function gameBot() {
     }
     return min;
   }
+
   /**
    * Механизм покупок
    */
   function checkAddon() {
-    var list = getListToBuy();
-    var max = 0;
-    list.filter(function (item) {
-      return item.val > 0;
-    }).forEach(function (item) {
-      if (max == 0) {
-        max = item.val;
-      } else {
-        max = Math.max(max, item.val);
+    var self = this;
+    if (self.buyCounter >= self.timeToBuy) {
+      self.buyCounter = 0;
+      var list = getListToBuy();
+      var min = 0;
+      var index = 0;
+      list.filter(function (item) {
+        return item.val > 0;
+      }).forEach(function (item) {
+        if (min == 0 || min < item.val) {
+          min = item.val;
+          index = item.index;
+        }
+      });
+      if (min != 0) {
+        var element = $('a:contains("Лидеры")').parent().next().next().find('>div').eq(index).find('a').get(0).click();
+        console.log('buy ' + min);
       }
-    });
-
-
-
+    }
+    self.buyCounter++;
   }
 
   /**
@@ -139,6 +150,7 @@ function gameBot() {
     closeAllInfo();
     checkAddon();
   }
+  return this;
 }
 var bot = new gameBot();
 bot.addJquery();
